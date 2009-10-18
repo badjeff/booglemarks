@@ -1,8 +1,8 @@
 Booglemarks
 ===========
-This is a SIMBL plugin for Safari 4 to access Google Bookmarks form menu.
+This is a SIMBL plugin for Safari 4, to open Google Bookmarks from main menu.
 
 Build and Install
 -----------------
-Build it with Xcode then copy build/Debug/Booglemarks.bundle into ~/Library/Application Support/SIMBL/Plugins.
+Build it with Xcode 3.2 then copy build/Debug/Booglemarks.bundle into ~/Library/Application Support/SIMBL/Plugins.
 Of course, you need to install SIMBL (http://www.culater.net/software/SIMBL/SIMBL.php) first.
