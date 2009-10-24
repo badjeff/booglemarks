@@ -20,4 +20,4 @@ How to Install
 
 Is it Free
 ----------
-Yes, it is released under "MIT License":http://github.com/badjeff/booglemarks/blob/master/LICENSE.textfile
+Yes, it is released under "MIT License":http://github.com/badjeff/booglemarks/blob/master/LICENSE
