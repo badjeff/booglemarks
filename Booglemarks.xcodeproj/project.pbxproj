@@ -25,7 +25,7 @@
 		1F0150851078956E009D9CD4 /* BMModels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMModels.m; sourceTree = "<group>"; };
 		1F23F703106501DD0035D402 /* BMModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMModels.h; sourceTree = "<group>"; };
 		1F4748F0108B735A006C1EED /* LICENSE.textfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.textfile; sourceTree = "<group>"; };
-		1F4748F1108B735A006C1EED /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		1F4748F1108B735A006C1EED /* README.textfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.textfile; sourceTree = "<group>"; };
 		1F5838361063F539008789C8 /* Info */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = Info; sourceTree = "<group>"; };
 		1F58383F1063F6B6008789C8 /* BMAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMAppController.h; sourceTree = "<group>"; };
 		1F5838401063F6B6008789C8 /* BMAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMAppController.m; sourceTree = "<group>"; };
@@ -77,7 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				1F4748F0108B735A006C1EED /* LICENSE.textfile */,
-				1F4748F1108B735A006C1EED /* README.md */,
+				1F4748F1108B735A006C1EED /* README.textfile */,
 				1F5838361063F539008789C8 /* Info */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
