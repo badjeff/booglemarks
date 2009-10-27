@@ -18,6 +18,11 @@ h2. How to Install
 # Find the Booglemarks on Safari's main menu
 
 
+h2. How it Looks
+
+!http://cloud.github.com/downloads/badjeff/booglemarks/Screenshot.png!
+
+
 h2. Is it Free
 
 Yes, it is released under "MIT License":http://github.com/badjeff/booglemarks/blob/master/LICENSE
