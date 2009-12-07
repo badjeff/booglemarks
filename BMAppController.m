@@ -46,13 +46,27 @@ void Swizzle(Class c, SEL orig, SEL new)
 
 @implementation NSArray (Booglemarks)
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 - (id) selectFirst: (BOOL(^)(id)) block;
 {
     for (id obj in self) if (block(obj)) return obj;
     return nil;
 }
+#else
+- (id) selectFirstCpationed: (NSString*) caption
+{
+    for (id obj in self) 
+	{
+		NSMenuItem* menuItem = (NSMenuItem *) obj;
+		if ([[menuItem title] compare: caption] == NSOrderedSame)
+			return menuItem;
+	}
+	return nil;
+}
+#endif
 
 @end
+
 
 @implementation NSMutableArray (Booglemarks)
 
@@ -183,10 +197,14 @@ void Swizzle(Class c, SEL orig, SEL new)
 		//NSLog(@"%@", bookmarksCaption);
 		
 		NSArray* appMenus = [[NSApp mainMenu] itemArray];
+		#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 		NSMenuItem* orgBookmarksItem = [appMenus selectFirst: ^(id obj) {
 			NSMenuItem* menuItem = (NSMenuItem *) obj;
 			return (BOOL) ([[menuItem title] compare: orgBookmarksCaption] == NSOrderedSame);
 		}];
+		#else
+		NSMenuItem* orgBookmarksItem = [appMenus selectFirstCpationed: orgBookmarksCaption];
+		#endif
 		if (orgBookmarksItem)
 			insertPos = [appMenus indexOfObject:orgBookmarksItem];
 	}	
@@ -391,7 +409,7 @@ didStartElement: (NSString *) elementName
 	}
 
     if ([elementName isEqual:@"a"]) {
-        bookmarkInProgress = [[Bookmark alloc] init];
+        bookmarkInProgress = [[BookmarkItem alloc] init];
 		bookmarkInProgress.url = [attributeDict objectForKey:@"href"];
 		bookmarkInProgress.updatedOn = [attributeDict objectForKey:@"add_date"];
 
@@ -421,7 +439,7 @@ didStartElement: (NSString *) elementName
 	{
 		bookmarkInProgress.title = textInProgress;
 		
-		[tagInProgress.bookmarks addObject:bookmarkInProgress];
+		[tagInProgress.items addObject:bookmarkInProgress];
 
         [bookmarkInProgress release];
         bookmarkInProgress = nil;
@@ -493,7 +511,7 @@ foundCharacters:(NSString *)string
 	return openInTabsMenuItem;
 }
 
-- (NSMenuItem *) menuItemWithBookmark: (Bookmark *) bookmark
+- (NSMenuItem *) menuItemWithBookmark: (BookmarkItem *) bookmark
 {
 	NSMenuItem* bookmarkMenuItem =  [[[NSMenuItem alloc] init] autorelease];
 	[bookmarkMenuItem setRepresentedObject: bookmark];
@@ -505,80 +523,144 @@ foundCharacters:(NSString *)string
 	return bookmarkMenuItem;
 }
 
-- (void) appendMenuItemFromTags
+- (Tag*) searchOrCreateTagNamed: (NSArray*) nameChain withTags: (NSMutableArray*) _tags
 {
-	NSMutableArray* recentUpdated = [[NSMutableArray alloc] init];
-	NSInteger recentBound = 10;
-	
-	for (int t=0; t<[tags count]; t++)
+	for (int t=0; t<[_tags count]; t++)
 	{
-		Tag* tag = [tags objectAtIndex: t];
-		[tag.bookmarks sortUsingSelector: @selector(titleComparator:)];
+		Tag* tag = [_tags objectAtIndex: t];
+		if ([[tag name] compare: [nameChain objectAtIndex:0]] == NSOrderedSame)
+		{
+			if ([nameChain count] == 0)
+				return tag;
+			else
+			{
+				NSMutableArray* tagNames = [NSMutableArray arrayWithArray: nameChain];
+				[tagNames removeObjectAtIndex: 0];
+				return [self searchOrCreateTagNamed: tagNames withTags: tag.tags];
+			}
+		}
+	}
+	
+	Tag* newTag = [[[Tag alloc] init] autorelease];
+	newTag.name = [nameChain objectAtIndex:0];
+	[_tags addObject: newTag];
+	
+	NSMutableArray* tagNames = [NSMutableArray arrayWithArray: nameChain];
+	[tagNames removeObjectAtIndex: 0];
+	
+	if ([tagNames count] > 0)
+		return [self searchOrCreateTagNamed: tagNames withTags: newTag.tags];
+	else
+		return newTag;
+}
+
+- (void) willAppendMenuItemWithTags: (NSMutableArray*) _tags
+{
+	[_tags sortUsingSelector: @selector(nameComparator:)];
+	
+	NSMutableArray* tagsToBeRemoved = [[NSMutableArray alloc] init];
+	for (int t=0; t<[_tags count]; t++)
+	{
+		Tag* tag = [_tags objectAtIndex: t];
+		NSArray* nameChain = [[tag name] componentsSeparatedByString: tagSeperator];
+		if ([nameChain count] > 1)
+		{
+			Tag* t = [self searchOrCreateTagNamed: nameChain withTags: _tags];
+			t.items = tag.items;
+			[tagsToBeRemoved addObject: tag];
+		}
+	}
+	[_tags removeObjectsInArray: tagsToBeRemoved];
+	[tagsToBeRemoved release];
+}
+
+- (void) sortMostRecentWithTags: (NSMutableArray*) _tags recentUpdated: (NSMutableArray*) recentUpdated
+{
+	NSInteger recentBound = 10;
+	for (int t=0; t<[_tags count]; t++)
+	{
+		Tag* tag = [_tags objectAtIndex: t];
 		
-		[recentUpdated addReduancyObjectsFromArray: tag.bookmarks];
+		[self sortMostRecentWithTags: tag.tags recentUpdated: recentUpdated];
+		
+		[recentUpdated addReduancyObjectsFromArray: tag.items];
 		[recentUpdated sortUsingSelector: @selector(recentUpdatedComparator:)];
 		if ([recentUpdated count] > recentBound)
 			[recentUpdated removeObjectsInRange: NSMakeRange(recentBound, [recentUpdated count]-recentBound)];
+	}
+}
 
-		NSMutableArray* bookmarkMenus = [[NSMutableArray alloc] init];
-		for (int b=0; b<[tag.bookmarks count]; b++)
-		{
-			Bookmark* bookmark = [tag.bookmarks objectAtIndex: b];
-			[bookmarkMenus addObject: [self menuItemWithBookmark: bookmark]];
-		}
+- (void) appendMenuItemMostRecentWithTags: (NSMutableArray*) _tags toMenu: (NSMenu*) menu
+{
+	NSMutableArray* recentUpdated = [[NSMutableArray alloc] init];
+	
+	[self sortMostRecentWithTags: _tags recentUpdated: recentUpdated];
+	
+	if ([recentUpdated count] > 0)
+	{
+		NSMenuItem* tagMenuItem = [[[NSMenuItem alloc] init] autorelease];
+		[tagMenuItem setRepresentedObject: nil];
+		[tagMenuItem setTitle: BMLocalizedString(@"Most Recent")];
+		[tagMenuItem setImage: historyIcon];
+		[menu insertItem: tagMenuItem atIndex: 5];
+		
+		NSMenu* submenu = [[NSMenu alloc] init];
+		for (BookmarkItem* bookmark in recentUpdated)
+			[submenu addItem: [self menuItemWithBookmark: bookmark]];
+		[tagMenuItem setSubmenu: submenu];
+		[submenu release];
+	}
+	[recentUpdated release];
+}
+
+- (NSMenuItem *) appendMenuItemWithTag: (Tag *) tag toMenu: (NSMenu *) submenu
+{
+	NSMenuItem* tagMenuItem = [[[NSMenuItem alloc] init] autorelease];
+	[tagMenuItem setRepresentedObject: tag];
+	[tagMenuItem setTitle: tag.name];
+	[tagMenuItem setImage: folderIcon];
+	[submenu addItem: tagMenuItem];
+	return tagMenuItem;
+}
+
+- (void) appendMenuItemWithTags: (NSMutableArray*) _tags toMenu: (NSMenu*) menu
+{
+	[_tags sortUsingSelector: @selector(nameComparator:)];
+	
+	for (int t=0; t<[_tags count]; t++)
+	{
+		Tag* tag = [_tags objectAtIndex: t];
+		[tag.items sortUsingSelector: @selector(titleComparator:)];
 		
 		if ([[tag name] compare: @"Unlabeled"] == NSOrderedSame)
 		{
-			for (NSMenuItem* bookmarkMenuItem in bookmarkMenus)
-				[topMenu addItem: bookmarkMenuItem];
+			for (int b=0; b<[tag.items count]; b++)
+			{
+				BookmarkItem* bookmark = [tag.items objectAtIndex: b];
+				[menu addItem: [self menuItemWithBookmark: bookmark]];
+			}
 		}
 		else
 		{
-			NSMenuItem* tagMenuItem =  [[NSMenuItem alloc] init];
-			[tagMenuItem setRepresentedObject: tag];
-			[tagMenuItem setTitle: [tag name]];
-			[tagMenuItem setImage: folderIcon];
-			[topMenu addItem: tagMenuItem];
-			[tagMenuItem release];
-			
+			NSMenuItem* tagMenuItem = [self appendMenuItemWithTag: tag toMenu: menu];
 			NSMenu* submenu = [[NSMenu alloc] init];
-			for (NSMenuItem* bookmarkMenuItem in bookmarkMenus)
-				[submenu addItem: bookmarkMenuItem];
+
+			if ([tag.tags count] > 0)
+				[self appendMenuItemWithTags: tag.tags toMenu: submenu];
+			
+			for (int b=0; b<[tag.items count]; b++)
+			{
+				BookmarkItem* bookmark = [tag.items objectAtIndex: b];
+				[submenu addItem: [self menuItemWithBookmark: bookmark]];
+			}
 			[tagMenuItem setSubmenu: submenu];
 			[submenu release];
 			
 			[submenu addItem: [NSMenuItem separatorItem]];
-			
 			[submenu addItem: [self menuItemAddBookmarkHereWithTag: tag]];
 			[submenu addItem: [self menuItemOpenInTabsWithTag: tag]];
 		}
-		
-//		for (NSMenuItem* bookmarkMenuItem in bookmarkMenus)
-//			[[bookmarkMenuItem representedObject] retriveFaviconForMenuItem: bookmarkMenuItem];
-
-		[bookmarkMenus release];
 	}
-	
-	if ([recentUpdated count] > 0)
-	{
-		NSMenuItem* tagMenuItem =  [[NSMenuItem alloc] init];
-		[tagMenuItem setRepresentedObject: nil];
-		[tagMenuItem setTitle: BMLocalizedString(@"Most Recent")];
-		[tagMenuItem setImage: historyIcon];
-		[topMenu insertItem: tagMenuItem atIndex: 5];
-		[tagMenuItem release];
-		
-		NSMenu* submenu = [[NSMenu alloc] init];
-		for (Bookmark* bookmark in recentUpdated)
-			[submenu addItem: [self menuItemWithBookmark: bookmark]];
-		[tagMenuItem setSubmenu: submenu];
-		
-//		for (NSMenuItem* bookmarkMenuItem in [submenu itemArray])
-//			[[bookmarkMenuItem representedObject] retriveFaviconForMenuItem: bookmarkMenuItem];
-
-		[submenu release];
-	}
-	[recentUpdated release];
 }
 
 - (void) addStaticMenus
@@ -610,7 +692,11 @@ foundCharacters:(NSString *)string
 	if (! error || [error code] == 0)
 	{
 		[topMenu addItem:[NSMenuItem separatorItem]];
-		[self appendMenuItemFromTags];
+
+		[self willAppendMenuItemWithTags: tags];
+
+		[self appendMenuItemMostRecentWithTags: tags toMenu: topMenu];
+		[self appendMenuItemWithTags: tags toMenu: topMenu];
 	}
 	else
 	{
@@ -798,13 +884,13 @@ foundCharacters:(NSString *)string
 - (IBAction) didClickOpenInTabs: (id) sender
 {
 	Tag* tag = [(NSMenuItem *)sender representedObject];
-	for (Bookmark* bookmark in tag.bookmarks)
+	for (BookmarkItem* bookmark in tag.items)
 		[self openUrl: bookmark.url newTab: YES];
 }
 
 - (IBAction) didClickBookmarkItem: (id) sender
 {
-	Bookmark* bookmark = [(NSMenuItem *)sender representedObject];
+	BookmarkItem* bookmark = [(NSMenuItem *)sender representedObject];
 	[self openUrl: bookmark.url];
 //	[bookmark retriveFaviconForMenuItem: sender];
 }

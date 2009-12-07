@@ -91,8 +91,8 @@
 			children = (
 				1F58383F1063F6B6008789C8 /* BMAppController.h */,
 				1F5838401063F6B6008789C8 /* BMAppController.m */,
-				1F0150851078956E009D9CD4 /* BMModels.m */,
 				1F23F703106501DD0035D402 /* BMModels.h */,
+				1F0150851078956E009D9CD4 /* BMModels.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -276,7 +276,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.5;
 			};
 			name = Debug;
 		};

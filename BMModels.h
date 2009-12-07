@@ -30,16 +30,18 @@
 @interface Tag : NSObject
 {
 	NSString* name;
-	NSMutableArray* bookmarks;
+	NSMutableArray* items;
+	NSMutableArray* tags;
 }
 
 @property (nonatomic, retain) NSString* name;
-@property (nonatomic, retain) NSMutableArray* bookmarks;
+@property (nonatomic, retain) NSMutableArray* items;
+@property (nonatomic, retain) NSMutableArray* tags;
 
 @end
 
 
-@interface Bookmark : NSObject
+@interface BookmarkItem : NSObject
 {
 	NSString* title;
 	NSString* url;

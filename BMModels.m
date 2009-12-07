@@ -29,21 +29,28 @@
 @implementation Tag
 
 @synthesize name;
-@synthesize bookmarks;
+@synthesize items;
+@synthesize tags;
 
 - (id) init
 {
 	if (self = [super init])
 	{
-		self.bookmarks = [[NSMutableArray alloc] init];
+		self.items = [[NSMutableArray alloc] init];
+		self.tags = [[NSMutableArray alloc] init];
 	}
 	return self;
+}
+
+- (NSComparisonResult) nameComparator: (Tag *) tag
+{
+	return [self.name caseInsensitiveCompare: tag.name];
 }
 
 @end
 
 
-@implementation Bookmark
+@implementation BookmarkItem
 
 @synthesize title;
 @synthesize url;
@@ -71,19 +78,19 @@
 	return nil;
 }
 
-- (NSComparisonResult) titleComparator: (Bookmark *) Bookmark
+- (NSComparisonResult) titleComparator: (BookmarkItem *) bookmark
 {
-	return [self.title caseInsensitiveCompare: Bookmark.title];
+	return [self.title caseInsensitiveCompare: bookmark.title];
 }
 
-- (NSComparisonResult) recentUpdatedComparator: (Bookmark *) Bookmark
+- (NSComparisonResult) recentUpdatedComparator: (BookmarkItem *) bookmark
 {
-	return [Bookmark.updatedOn compare: self.updatedOn];
+	return [bookmark.updatedOn compare: self.updatedOn];
 }
 
 - (BOOL) isEqual: (id) object
 {
-	return [self.url isEqualToString: ((Bookmark *) object).url];
+	return [self.url isEqualToString: ((BookmarkItem *) object).url];
 }
 
 - (NSUInteger)hash
