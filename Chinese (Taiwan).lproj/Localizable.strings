@@ -1,0 +1,56 @@
+/*
+ 
+ The MIT License
+ 
+ Copyright (c) 2009 Booglemarks Developers
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ 
+ */
+
+CFBundleName = "Booglemarks";
+CFBundleVersion = "版本 1.0.1";
+CFBundleShortVersionString = "";
+CREDIT = "Spanish Translation by Nicolás Lagalaye";
+NSHumanReadableCopyright = "Copyright © 2009 Jeff Leung\nAll rights reserved.";
+
+"Booglemarks" = "谷歌書籤";
+"About Booglemarks" = "關於 Booglemarks";
+
+"Show Bookmarks" = "顯示所有谷歌書籤";
+"Add Bookmark" = "新增谷歌書籤";
+"Reload Bookmarks" = "重新載入所有書籤";
+"Reload Options" = "載入設定";
+
+"Reloading" = "重新載入中...";
+"Not Logged Yet" = "未登入";
+"Sign In" = "登入";
+
+"Most Recent" = "最近更新書籤";
+"Add Bookmark Here" = "在此處新增書籤";
+"Open in Tabs" = "以新標籤開啟所有書籤";
+
+"URL_HOME" = "http://www.google.com/bookmarks/";
+"URL_EXPORT" = "http://www.google.com/bookmarks/bookmarks.html";
+"URL_ADD" = "http://www.google.com/bookmarks/mark?op=add&labels=%@&bkmk=%@&title=%@";
+"URL_SIGN_IN" = "https://www.google.com/accounts/ServiceLogin";
+
+"URL_LOGGED_MASK_1" = ".*\.google\.com(\.*[a-z]{0,3})\/accounts\/CheckCookie.*";
+"URL_LOGGED_MASK_2" = ".*\.google\.com(\.*[a-z]{0,3})\/accounts\/ServiceLoginAuth\?.*";
+"URL_LOGOUT_MASK" = ".*\.google\.com(\.*[a-z]{0,3})\/accounts\/[lL]ogout2.*";

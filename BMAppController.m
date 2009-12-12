@@ -627,6 +627,7 @@ foundCharacters:(NSString *)string
 {
 	[_tags sortUsingSelector: @selector(nameComparator:)];
 	
+	Tag* unlabeledTag = nil;
 	for (int t=0; t<[_tags count]; t++)
 	{
 		Tag* tag = [_tags objectAtIndex: t];
@@ -634,11 +635,7 @@ foundCharacters:(NSString *)string
 		
 		if ([[tag name] compare: @"Unlabeled"] == NSOrderedSame)
 		{
-			for (int b=0; b<[tag.items count]; b++)
-			{
-				BookmarkItem* bookmark = [tag.items objectAtIndex: b];
-				[menu addItem: [self menuItemWithBookmark: bookmark]];
-			}
+			unlabeledTag = tag;
 		}
 		else
 		{
@@ -659,6 +656,14 @@ foundCharacters:(NSString *)string
 			[submenu addItem: [NSMenuItem separatorItem]];
 			[submenu addItem: [self menuItemAddBookmarkHereWithTag: tag]];
 			[submenu addItem: [self menuItemOpenInTabsWithTag: tag]];
+		}
+	}
+	if (unlabeledTag)
+	{
+		for (int b=0; b<[unlabeledTag.items count]; b++)
+		{
+			BookmarkItem* bookmark = [unlabeledTag.items objectAtIndex: b];
+			[menu addItem: [self menuItemWithBookmark: bookmark]];
 		}
 	}
 }
