@@ -2,6 +2,8 @@ h2. What is Booglemarks
 
 This is a SIMBL plugin for Safari 4. It lets you access your "Google Bookmarks":http://www.google.com/bookmarks/ from main menu.
 
+!http://cloud.github.com/downloads/badjeff/booglemarks/Screenshot.png!
+
 
 h2. What it Does
 
@@ -16,11 +18,6 @@ h2. How to Install
 # Copy unzipped "Booglemarks.bundle":http://cloud.github.com/downloads/badjeff/booglemarks/Booglemarks.bundle.zip to @~/Library/Application Support/SIMBL/Plugins/@
 # Quit and open Safari
 # Find the Booglemarks on Safari's main menu
-
-
-h2. How it Looks
-
-!http://cloud.github.com/downloads/badjeff/booglemarks/Screenshot.png!
 
 
 h2. Is it Free
