@@ -47,7 +47,7 @@ NSHumanReadableCopyright = "Copyright © 2009 Jeff Leung\nTous droits réservés
 "Open in Tabs" = "Ouvrir en Onglets";
 
 "URL_HOME" = "http://www.google.com/bookmarks/";
-"URL_EXPORT" = "http://www.google.com/bookmarks/bookmarks.html";
+"URL_EXPORT" = "https://www.google.com/bookmarks/bookmarks.html";
 "URL_ADD" = "http://www.google.com/bookmarks/mark?op=add&labels=%@&bkmk=%@&title=%@";
 "URL_SIGN_IN" = "https://www.google.com/accounts/ServiceLogin";
 
