@@ -35,11 +35,11 @@ static NSString * tagSeperator = @":";
 
 
 @interface NSArray (Booglemarks)
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-- (id) selectFirst: (BOOL(^)(id)) block;
-#else
+//#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+//- (id) selectFirst: (BOOL(^)(id)) block;
+//#else
 - (id) selectFirstCpationed: (NSString*) caption;
-#endif
+//#endif
 @end
 
 
@@ -52,11 +52,11 @@ static NSString * tagSeperator = @":";
 @class BookmarkItem;
 
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-@interface BMAppController : NSObject <NSXMLParserDelegate>
-#else
+//#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+//@interface BMAppController : NSObject <NSXMLParserDelegate>
+//#else
 @interface BMAppController : NSObject
-#endif
+//#endif
 {
 	NSMenu* topMenu;
 	NSMenuItem* menuItemShowBookmarks;

@@ -46,13 +46,13 @@ void Swizzle(Class c, SEL orig, SEL new)
 
 @implementation NSArray (Booglemarks)
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-- (id) selectFirst: (BOOL(^)(id)) block;
-{
-    for (id obj in self) if (block(obj)) return obj;
-    return nil;
-}
-#else
+//#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+//- (id) selectFirst: (BOOL(^)(id)) block;
+//{
+//    for (id obj in self) if (block(obj)) return obj;
+//    return nil;
+//}
+//#else
 - (id) selectFirstCpationed: (NSString*) caption
 {
     for (id obj in self) 
@@ -63,7 +63,7 @@ void Swizzle(Class c, SEL orig, SEL new)
 	}
 	return nil;
 }
-#endif
+//#endif
 
 @end
 
@@ -197,14 +197,14 @@ void Swizzle(Class c, SEL orig, SEL new)
 		//NSLog(@"%@", bookmarksCaption);
 		
 		NSArray* appMenus = [[NSApp mainMenu] itemArray];
-		#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-		NSMenuItem* orgBookmarksItem = [appMenus selectFirst: ^(id obj) {
-			NSMenuItem* menuItem = (NSMenuItem *) obj;
-			return (BOOL) ([[menuItem title] compare: orgBookmarksCaption] == NSOrderedSame);
-		}];
-		#else
+//		#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+//		NSMenuItem* orgBookmarksItem = [appMenus selectFirst: ^(id obj) {
+//			NSMenuItem* menuItem = (NSMenuItem *) obj;
+//			return (BOOL) ([[menuItem title] compare: orgBookmarksCaption] == NSOrderedSame);
+//		}];
+//		#else
 		NSMenuItem* orgBookmarksItem = [appMenus selectFirstCpationed: orgBookmarksCaption];
-		#endif
+//		#endif
 		if (orgBookmarksItem)
 			insertPos = [appMenus indexOfObject:orgBookmarksItem];
 	}	
@@ -687,7 +687,12 @@ foundCharacters:(NSString *)string
 	//
 	// reconstruct menu items
 	//
-	[topMenu removeAllItems];
+	if ([topMenu respondsToSelector:@selector(removeAllItems)])
+		[topMenu removeAllItems];
+	else
+		while ([[topMenu itemArray] count])
+			[topMenu removeItemAtIndex:0];
+
 	[self addStaticMenus];
 	[topMenu addItem: [NSMenuItem separatorItem]];
 	[topMenu addItem: menuItemReloadBookmarks];
@@ -744,7 +749,11 @@ foundCharacters:(NSString *)string
 	// chop unclosed tags
 	//
 	DOMDocument* domDoc = [frame DOMDocument];
-	NSString* innerHTML = [[domDoc body] innerHTML];
+	NSString* innerHTML = @"";
+	if ([domDoc respondsToSelector:@selector(body)])
+		innerHTML = [[domDoc body] innerHTML];
+	else if ([domDoc respondsToSelector:@selector(documentElement)])
+		innerHTML = [[domDoc documentElement] innerHTML];
 	
 	NSArray* messTags = [NSArray arrayWithObjects:@"<dl>", @"</dl>", @"<dt>", @"</dt>", @"<p>", @"</p>", nil];
 	for (NSString* tag in messTags)
@@ -808,7 +817,12 @@ foundCharacters:(NSString *)string
 	//
 	// display *Reloading...* on top menu
 	//
-	[topMenu removeAllItems];
+	if ([topMenu respondsToSelector:@selector(removeAllItems)])
+		[topMenu removeAllItems];
+	else
+		while ([[topMenu itemArray] count])
+			[topMenu removeItemAtIndex:0];
+
 	[self addStaticMenus];
 	[topMenu addItem: [NSMenuItem separatorItem]];
 	[topMenu addItem: menuItemReloading];
