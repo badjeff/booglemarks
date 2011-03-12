@@ -6,26 +6,26 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleName</key>
-	<string>${PRODUCT_NAME}</string>
+	<key>CFBundleGetInfoString</key>
+	<string>${PRODUCT_NAME} 1.0, Copyright (c) 2009-2011 Jeff Leung, All Rights Reserved.</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
 	<string>com.appspot.${PRODUCT_NAME:rfc1034Identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.1</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string>
+	<string>1.0.2</string>
 	<key>NSPrincipalClass</key>
 	<string>BMAppController</string>
-	<key>CFBundleGetInfoString</key>
-	<string>${PRODUCT_NAME} 1.0, Copyright (c) 2006-2009 Jeff Leung, All Rights Reserved.</string>
 	<key>SIMBLTargetApplications</key>
 	<array>
 		<dict>

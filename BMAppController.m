@@ -192,8 +192,8 @@ void Swizzle(Class c, SEL orig, SEL new)
 	[topMenu release];
 	NSInteger insertPos = [[NSApp mainMenu] numberOfItems] - 1;
 	{
-		NSBundle* appBundle = [NSBundle bundleForClass: [NSApp class]];
-		NSString* orgBookmarksCaption = [appBundle localizedStringForKey:@"Bookmarks" value:@"" table:(nil)];
+//		NSBundle* appBundle = [NSBundle bundleForClass: [NSApp class]];
+//		NSString* orgBookmarksCaption = [appBundle localizedStringForKey:@"Bookmarks" value:@"" table:(nil)];
 		//NSLog(@"%@", bookmarksCaption);
 		
 		NSArray* appMenus = [[NSApp mainMenu] itemArray];
@@ -203,7 +203,8 @@ void Swizzle(Class c, SEL orig, SEL new)
 //			return (BOOL) ([[menuItem title] compare: orgBookmarksCaption] == NSOrderedSame);
 //		}];
 //		#else
-		NSMenuItem* orgBookmarksItem = [appMenus selectFirstCpationed: orgBookmarksCaption];
+//		NSMenuItem* orgBookmarksItem = [appMenus selectFirstCpationed: orgBookmarksCaption];
+		NSMenuItem* orgBookmarksItem = [appMenus objectAtIndex:5];
 //		#endif
 		if (orgBookmarksItem)
 			insertPos = [appMenus indexOfObject:orgBookmarksItem];

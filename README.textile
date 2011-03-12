@@ -2,7 +2,7 @@ h2. What is Booglemarks
 
 This is a SIMBL plugin for Safari 4. It lets you access your "Google Bookmarks":http://www.google.com/bookmarks/ from main menu.
 
-!http://cloud.github.com/downloads/badjeff/booglemarks/Screenshot.png!
+!http://f.cl.ly/items/1y1m41402e162w2d1O1s/Screenshot.png!
 
 
 h2. What it Does
