@@ -341,11 +341,11 @@ void Swizzle(Class c, SEL orig, SEL new)
 	WebView* webView = nil;
 	for (window in [NSApp orderedWindows])
 	{
-		webView = (WebView *) [self searchSubClassOf: [WebView class] in: [window contentView]];
-		if (!webView) {
-			NSTabView* tabview = [self searchSubClassNamed:@"NSTabView" in: [window contentView]];
+		NSTabView* tabview = [self searchSubClassNamed:@"NSTabView" in: [window contentView]];
+		if (tabview)
 			webView = (id)[tabview selectedTabViewItem];
-		}
+		if (!webView)
+			webView = (WebView *) [self searchSubClassOf: [WebView class] in: [window contentView]];
 		if (webView)
 			break;
 	}
