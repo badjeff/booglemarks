@@ -24,6 +24,7 @@
  
  */
 
+#import <objc/runtime.h>
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 
@@ -263,6 +264,28 @@ void Swizzle(Class c, SEL orig, SEL new)
 
 #pragma mark App Function
 
+- (void) inspectClassMethods: (Class) clazz
+{
+	unsigned int outCount, i;
+	Method *methods = class_copyMethodList(clazz, &outCount);
+	for(i = 0; i < outCount; i++) {
+		Method method = methods[i];
+		NSLog(@"- %@", NSStringFromSelector(method_getName(method)) );
+	}
+	free(methods);
+}
+
+- (void) inspectClassProperties: (Class) clazz
+{
+	unsigned int outCount, i;
+	objc_property_t *properties = class_copyPropertyList(clazz, &outCount);
+	for(i = 0; i < outCount; i++) {
+		objc_property_t property = properties[i];
+		fprintf(stdout, "%s %s\n", property_getName(property), property_getAttributes(property));
+	}
+	free(properties);
+}
+
 - (void) inspect: (NSView *) theView
 {
 	//NSLog(@"%@", theView);
@@ -303,7 +326,7 @@ void Swizzle(Class c, SEL orig, SEL new)
 	NSView* tabBarView = nil;
 	for (window in [NSApp orderedWindows])
 	{
-		tabBarView = (NSButton *) [self searchSubClassNamed: @"TabBarView" in: [window contentView]];
+		tabBarView = (id) [self searchSubClassNamed: @"TabBarView" in: [window contentView]];
 		if (tabBarView)
 			break;
 	}
@@ -312,13 +335,17 @@ void Swizzle(Class c, SEL orig, SEL new)
 	return tabBarView;
 }
 
-- (WebView *) searchOrderedWebView: (id) sender animated: (BOOL) animated
+- (id) searchOrderedWebView: (id) sender animated: (BOOL) animated
 {
 	NSWindow* window = nil;
 	WebView* webView = nil;
 	for (window in [NSApp orderedWindows])
 	{
 		webView = (WebView *) [self searchSubClassOf: [WebView class] in: [window contentView]];
+		if (!webView) {
+			NSTabView* tabview = [self searchSubClassNamed:@"NSTabView" in: [window contentView]];
+			webView = (id)[tabview selectedTabViewItem];
+		}
 		if (webView)
 			break;
 	}
@@ -338,9 +365,17 @@ void Swizzle(Class c, SEL orig, SEL new)
 				[tabBarView performSelector: @selector(_createTab:) withObject: self];
 		}
 	}
-	WebView* webView = [self searchOrderedWebView: self animated: YES];
+	id webView = [self searchOrderedWebView: self animated: YES];
 	if (webView)
-		[webView setMainFrameURL: url];
+	{
+		SEL selectorToOpenUrl = nil;
+		if ([webView respondsToSelector: @selector(setURLString:)])
+			selectorToOpenUrl = @selector(setURLString:);
+		if ([webView respondsToSelector: @selector(setMainFrameURL:)])
+			selectorToOpenUrl = @selector(setMainFrameURL:);
+		if (selectorToOpenUrl)
+			[webView performSelector:selectorToOpenUrl withObject: url];
+	}
 	else
 		[[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: url]];
 }
