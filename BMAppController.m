@@ -371,7 +371,7 @@ void Swizzle(Class c, SEL orig, SEL new)
 		SEL selectorToOpenUrl = nil;
 		if ([webView respondsToSelector: @selector(setURLString:)])
 			selectorToOpenUrl = @selector(setURLString:);
-		if ([webView respondsToSelector: @selector(setMainFrameURL:)])
+		else if ([webView respondsToSelector: @selector(setMainFrameURL:)])
 			selectorToOpenUrl = @selector(setMainFrameURL:);
 		if (selectorToOpenUrl)
 			[webView performSelector:selectorToOpenUrl withObject: url];
@@ -388,15 +388,25 @@ void Swizzle(Class c, SEL orig, SEL new)
 - (NSDictionary *) pageDictionary
 {
 	NSMutableDictionary* result = [[[NSMutableDictionary alloc] initWithCapacity: 2] autorelease];
-	WebView* webView = [self searchOrderedWebView: self animated: YES];
+
+	id webView = [self searchOrderedWebView: self animated: YES];
 	if (webView)
 	{
-		if ([webView mainFrameURL])
+		id urlString = nil;
+		if ([webView respondsToSelector: @selector(setURLString:)])
+			urlString = [webView performSelector:@selector(URLString)];
+		else if ([webView respondsToSelector: @selector(setMainFrameURL:)])
+			urlString = [webView performSelector:@selector(mainFrameURL)];
+		if (urlString)
 		{
-			[result setObject: [webView mainFrameURL] forKey:@"url"];
-			[result setObject: [webView mainFrameURL] forKey:@"title"];
+			[result setObject:urlString forKey:@"url"];
+			[result setObject:urlString forKey:@"title"];
 		}
-		if ([webView mainFrame])
+		if ([webView respondsToSelector:@selector(title)])
+		{
+			[result setObject:[webView performSelector:@selector(title)] forKey:@"title"];
+		}
+		else if ([webView respondsToSelector:@selector(mainFrame)])
 		{
 			DOMDocument* domDoc = [[webView mainFrame] DOMDocument];
 			if (domDoc)
