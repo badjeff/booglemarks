@@ -69,6 +69,9 @@ static NSString * tagSeperator = @":";
 	NSImage* folderIcon;
 	NSImage* bookmarkIcon;
 	NSImage* historyIcon;
+	NSImage* bookmarksIcon;
+	NSImage* addBookmarkIcon;
+	NSImage* reloadIcon;
 
 	NSMutableArray* tags;
 	

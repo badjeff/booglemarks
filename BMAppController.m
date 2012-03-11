@@ -124,14 +124,22 @@ void Swizzle(Class c, SEL orig, SEL new)
 	[folderIcon setSize: iconSize];
 	[folderIcon retain];
 
-	bookmarkIcon = [NSImage imageNamed:@"BookmarkPreferences.tiff"];
+	bookmarkIcon = [NSImage imageNamed:@"BookmarkPreferences~snowleopard.tiff"];
+	if (!bookmarkIcon)
+		bookmarkIcon = [NSImage imageNamed:@"BookmarkPreferences.tiff"];
 	[bookmarkIcon setSize: iconSize];
 	[bookmarkIcon retain];
 
-	historyIcon = [NSImage imageNamed:@"History.tif"];
+	historyIcon = [NSImage imageNamed:@"History.png"];
+	if (!historyIcon)
+		historyIcon = [NSImage imageNamed:@"History.tif"];
 	[historyIcon setSize: iconSize];
 	[historyIcon retain];
-	
+
+	bookmarksIcon = [bookmarkIcon retain];
+	addBookmarkIcon = [bookmarkIcon retain];
+	reloadIcon = nil;
+
 //	NSBundle* myBundle = [NSBundle bundleForClass:[self class]];
 //	NSImage* startImg = [[NSImage alloc] initWithContentsOfFile:[myBundle pathForImageResource:@"star.png"]];
 
@@ -149,7 +157,7 @@ void Swizzle(Class c, SEL orig, SEL new)
 	[menuItemShowBookmarks setAction: @selector(didClickShowBookmarks:) ];
 	[menuItemShowBookmarks setKeyEquivalent: @"b"];
 	[menuItemShowBookmarks setKeyEquivalentModifierMask: (NSControlKeyMask | NSCommandKeyMask)];
-	[menuItemShowBookmarks setImage: bookmarkIcon];
+	[menuItemShowBookmarks setImage: bookmarksIcon];
 	[menuItemShowBookmarks setTarget: self];
 	[menuItemShowBookmarks retain];
 	
@@ -158,7 +166,7 @@ void Swizzle(Class c, SEL orig, SEL new)
 	[menuItemAddBookmark setAction: @selector(didClickAddBookmark:) ];
 	[menuItemAddBookmark setKeyEquivalent: @"d"];
 	[menuItemAddBookmark setKeyEquivalentModifierMask: (NSControlKeyMask | NSCommandKeyMask)];
-	[menuItemAddBookmark setImage: bookmarkIcon];
+	[menuItemAddBookmark setImage: addBookmarkIcon];
 	[menuItemAddBookmark setTarget: self];
 	[menuItemAddBookmark retain];
 
@@ -167,11 +175,13 @@ void Swizzle(Class c, SEL orig, SEL new)
 	[menuItemReloadBookmarks setAction: @selector(didClickReloadAll:) ];
 	//[menuItemReloadBookmarks setKeyEquivalent: @"r"];
 	//[menuItemReloadBookmarks setKeyEquivalentModifierMask: NSControlKeyMask];
+	[menuItemReloadBookmarks setImage: reloadIcon];
 	[menuItemReloadBookmarks setTarget: self];
 	[menuItemReloadBookmarks retain];
 	
 	menuItemReloading =  [[NSMenuItem alloc] init];
 	[menuItemReloading setTitle: BMLocalizedString(@"Reloading")];
+	[menuItemReloadBookmarks setImage: reloadIcon];
 	[menuItemReloading retain];
 	
 	menuItemSignIn =  [[NSMenuItem alloc] init];
@@ -254,6 +264,9 @@ void Swizzle(Class c, SEL orig, SEL new)
 	[menuItemSignIn release];
 	[menuItemOops release];
 	
+	[bookmarksIcon release];
+	[addBookmarkIcon release];
+	[reloadIcon release];
 	[folderIcon release];
 	[bookmarkIcon release];
 	[historyIcon release];

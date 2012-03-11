@@ -25,10 +25,10 @@
  */
 
 CFBundleName = "Booglemarks";
-CFBundleVersion = "Version 1.0.2";
+CFBundleVersion = "Version 1.0.3";
 CFBundleShortVersionString = "";
 CREDIT = "Traducción al español por Nicolás Lagalaye";
-NSHumanReadableCopyright = "Copyright © 2009-2011 Jeff Leung\nAll rights reserved.";
+NSHumanReadableCopyright = "Copyright © 2009-2012 Jeff Leung\nAll rights reserved.";
 
 "Booglemarks" = "Booglemarks";
 "About Booglemarks" = "Acerca de Booglemarks";
