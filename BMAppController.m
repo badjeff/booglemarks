@@ -758,7 +758,7 @@ foundCharacters:(NSString *)string
 
 	NSError* error = [n object];
 	//NSLog(@"didReload: %@", error);
-	if (! error || [error code] == 0)
+	if (! error || [error code] == 0 || [error code] == 27)
 	{
 		[topMenu addItem:[NSMenuItem separatorItem]];
 
